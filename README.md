@@ -79,7 +79,8 @@ Have a look at the JSON files in `resources > invoices-json`.
 You can see that there are nested fields. We want to flatten those files so that there are no 
 nested fields in the final JSON files.
 
-### BONUS: Try to use Spark Structured Streaming on the exercises from the first day
+### BONUS 1: Repeat the previous exercise but using the parquet files format instead of JSON. Adapt anything you need in your code
+### BONUS 2: Try to use Spark Structured Streaming on the exercises from the first day
 
 
 ## Getting started with Apache Kafka
@@ -130,9 +131,17 @@ We want a new topic to log notifications. Each notification message produced to 
 
 The  column named `EarnedLoyaltyPoints` is a new column that you have to create, it will have the value of the result of `TotalAmount * 0.2`
 
-### 
+### Multi query
 Check out [c_multi_query.py](exercises/c_spark_streaming_kafka_source/c_multi_query.py) and implement the pure
 python function `transform`.
 
+
+## Extra information:
+In the `resources` folder you will find all the input data (JSON, CSV, parquet files) you need to do the exercises.
+
+The `utils` folder contains the `catalog.py` file which was also used during the first class with the Spark DataFrame API
+but this time adapted for Spark Structured Streaming. `invoice_schema.py` is the invoice schema of the messages written
+to the kafka topic. Under `kafka_scripts` you will find all the necessary scripts to start kafka (zookeeper, server, 
+create topics, start producer, start consumer).
 
 [Data Minded Academy]: https://www.dataminded.academy/
