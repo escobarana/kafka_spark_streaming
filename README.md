@@ -109,14 +109,14 @@ This will install any dependencies you might need to run this project in your vi
 ## Exercises
 
 ### Transform nested JSON files to flattened JSON files
-Check out [a_file_streaming.py](exercises/c_spark_streaming_kafka_source/a_file_streaming.py) and implement the pure
+Check out [file_streaming.py](exercises/c_spark_streaming_kafka_source/file_streaming.py) and implement the pure
 python function `transform`.
 
 Read the invoices, that are being sent through kafka in real-time, with Spark Structured Streaming and flatten the nested JSONs
 
 
 ### Log notifications back to Kafka cluster
-Check out [b_sink.py](exercises/c_spark_streaming_kafka_source/b_sink.py) and implement the pure
+Check out [sink.py](exercises/c_spark_streaming_kafka_source/sink.py) and implement the pure
 python function `transform`.
 
 We want a new topic to log notifications. Each notification message produced to that topic will have the following JSON schema:
@@ -132,7 +132,7 @@ We want a new topic to log notifications. Each notification message produced to 
 The  column named `EarnedLoyaltyPoints` is a new column that you have to create, it will have the value of the result of `TotalAmount * 0.2`
 
 ### Multi query
-Check out [c_multi_query.py](exercises/c_spark_streaming_kafka_source/c_multi_query.py) and implement the pure
+Check out [multi_query.py](exercises/c_spark_streaming_kafka_source/multi_query.py) and implement the pure
 python function `transform`.
 
 
