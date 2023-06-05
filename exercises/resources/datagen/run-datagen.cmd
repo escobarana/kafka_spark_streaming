@@ -1,0 +1,1 @@
+java -cp ./* datamindedacademy.dsti.kafka.examples.PosSimulator invoices 1 1000

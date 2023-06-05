@@ -66,13 +66,13 @@ You can send text to port 9999 just by typing in the same terminal.
 
 ## Exercises
 
-### 1. Count the number of words in real-time
+### Count the number of words in real-time
 Check out [word_count.py](exercises/a_spark_streaming_socket_source/word_count.py) and implement the pure
 python function `transform`.
 You will start a new terminal with an `ncat` listener as explained before. 
 Count how many times each word appears in real-time.
 
-### 2. Transform nested JSON files to flattened JSON files
+### Transform nested JSON files to flattened JSON files
 Check out [file_streaming.py](exercises/b_spark_streaming_file_source/file_streaming.py) and implement the pure
 python function `transform`.
 Have a look at the JSON files in `resources > invoices-json`.
@@ -90,6 +90,10 @@ Apache Kafka practice exercises mixed with Spark Structured Streaming
 Follow these instructions to set up Apache Kafka binaries and environment 
 variables on Windows/x64 System: [Click Here](https://app.tango.us/app/workflow/Download-and-Configure-Apache-Kafka-on-Windows-x64-System-474eb2506acd494ebd5c94686ea610c2) 
 
+**IMPORTANT: Add Spark SQL Kafka package to your Spark Defaults** `C:\spark3\conf` folder, `spark-defaults.conf` file:
+
+spark.jars.packages                org.apache.spark:spark-sql-kafka-0-10_2.12:3.2.4
+
 
 ### Prerequisites (if not already done)
 Open a new terminal and make sure you're in the `kafka_spark_streaming` directory. Then, run:
@@ -103,14 +107,32 @@ This will install any dependencies you might need to run this project in your vi
 
 ## Exercises
 
+### Transform nested JSON files to flattened JSON files
+Check out [a_file_streaming.py](exercises/c_spark_streaming_kafka_source/a_file_streaming.py) and implement the pure
+python function `transform`.
+
+Read the invoices, that are being sent through kafka in real-time, with Spark Structured Streaming and flatten the nested JSONs
+
+
+### Log notifications back to Kafka cluster
+Check out [b_sink.py](exercises/c_spark_streaming_kafka_source/b_sink.py) and implement the pure
+python function `transform`.
+
+We want a new topic to log notifications. Each notification message produced to that topic will have the following JSON schema:
+- InvoiceNumber
+- value
+  - CustomerCardNo 
+  - CustomerCardNo 
+  - TotalAmount 
+  - TotalAmount
+  - EarnedLoyaltyPoints
+  - TotalAmount * 0.2
+
+The  column named `EarnedLoyaltyPoints` is a new column that you have to create, it will have the value of the result of `TotalAmount * 0.2`
+
 ### 
-
-
-### 
-
-
-### 
-
+Check out [c_multi_query.py](exercises/c_spark_streaming_kafka_source/c_multi_query.py) and implement the pure
+python function `transform`.
 
 
 [Data Minded Academy]: https://www.dataminded.academy/
