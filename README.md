@@ -47,7 +47,7 @@ variables on Windows/x64 System: [Click Here](https://app.tango.us/app/workflow/
 
 ## Getting started with Spark Structured Streaming 
 
-Spark Structured Streaming practice exercises
+Spark Structured Streaming hands-on exercises
 
 ### Prerequisites
 Open a new terminal and make sure you're in the `kafka_spark_streaming` directory. Then, run:
@@ -68,24 +68,33 @@ You can send text to port 9999 just by typing in the same terminal.
 
 ### Count the number of words in real-time
 Check out [word_count.py](exercises/a_spark_streaming_socket_source/word_count.py) and implement the pure
-python function `transform`.
+python function `transform`. But first, make sure you understand the code and what it does.
 You will start a new terminal with an `ncat` listener as explained before. 
 Count how many times each word appears in real-time.
 
+Test your function with the [test_word_count.py](tests/test_word_count.py) test file.
+
+
 ### Transform nested JSON files to flattened JSON files
 Check out [file_streaming.py](exercises/b_spark_streaming_file_source/file_streaming.py) and implement the pure
-python function `transform`.
+python function `transform`. But first, make sure you understand the code and what it does.
 Have a look at the JSON files in `resources > invoices-json`.
 You can see that there are nested fields. We want to flatten those files so that there are no 
 nested fields in the final JSON files.
 
-### BONUS 1: Repeat the previous exercise but using the parquet files format instead of JSON. Adapt anything you need in your code
-### BONUS 2: Try to use Spark Structured Streaming on the exercises from the first day
+### BONUS 1
+Create a test file to test your function from exercise 2.
+
+### BONUS 2
+Repeat the previous exercise but using the parquet files format instead of JSON. Adapt anything you need in your code
+
+### BONUS 3
+Translate the exercises from the first day to use Spark Structured Streaming
 
 
 ## Getting started with Apache Kafka
 
-Apache Kafka practice exercises mixed with Spark Structured Streaming
+Apache Kafka hands-on exercises mixed with Spark Structured Streaming
 
 ## Apache Kafka Set Up on Windows
 Follow these instructions to set up Apache Kafka binaries and environment 
@@ -109,39 +118,51 @@ This will install any dependencies you might need to run this project in your vi
 ## Exercises
 
 ### Transform nested JSON files to flattened JSON files
-Check out [file_streaming.py](exercises/c_spark_streaming_kafka_source/file_streaming.py) and implement the pure
-python function `transform`.
-
 Read the invoices, that are being sent through kafka in real-time, with Spark Structured Streaming and flatten the nested JSONs
 
+Check out [file_streaming.py](exercises/c_spark_streaming_kafka_source/file_streaming.py) and implement the pure
+python function `transform`. But first, make sure you understand the code and what it does.
 
-### Log notifications back to Kafka cluster
-Check out [sink.py](exercises/c_spark_streaming_kafka_source/sink.py) and implement the pure
-python function `transform`.
+![Exercise 1 - Kafka and Spark Structures Streaming](images/exercise1.png "Exercise 1 - Kafka and Spark Structures Streaming")
 
-We want a new topic to log notifications. Each notification message produced to that topic will have the following JSON schema:
-- InvoiceNumber
-- value
-  - CustomerCardNo 
-  - CustomerCardNo 
-  - TotalAmount 
-  - TotalAmount
-  - EarnedLoyaltyPoints
-  - TotalAmount * 0.2
 
-The  column named `EarnedLoyaltyPoints` is a new column that you have to create, it will have the value of the result of `TotalAmount * 0.2`
+### Send Notification Record to Kafka Topic
+1. Read Invoices from Kafka Topic
+2. Create Notification Record (with 3 fields):
+   3. {"CustomerCardNo": "243252", "TotalAmount": 11115.0, "EarnedLoyaltyPoints": 2222.6}
+   4. The  column named `EarnedLoyaltyPoints` is a new column that you have to create, it is 20% of the `TotalAmount` column
+3. Send Notification Record to Kafka Topic
+   4. Kafka Topic receives data as key-value pair, send the `invoice number` as a **key** and the `notification record` as a **value**
+
+Check out [notification.py](exercises/c_spark_streaming_kafka_source/notification.py) and implement the pure
+python functions `transform` and `get_notification_dataframe`. But first, make sure you understand the code and what it does.
+
+![Exercise 2 - Kafka and Spark Structures Streaming](images/exercise2.png "Exercise 2 - Kafka and Spark Structures Streaming")
+
 
 ### Multi query
+Let's do exercise 1 and exercise 2 at once. So, we'll be reading from the invoice topic and we'll write to the outpu
+files at the same time we'll write to the notifications topic. This will save some execution time and resources since
+we'll only need to read from Kafka once and we can compute the transformations at the same time.
+
 Check out [multi_query.py](exercises/c_spark_streaming_kafka_source/multi_query.py) and implement the pure
-python function `transform`.
+python functions `transform_flatten_reports` and `get_notification_df_transformed`. 
+But first, make sure you understand the code and what it does.
+
+![Exercise 3 - Kafka and Spark Structures Streaming](images/exercise3.png "Exercise 3 - Kafka and Spark Structures Streaming")
 
 
-## Extra information:
+### BONUS
+Create a test file to test your functions.
+
+
+## Useful information:
 In the `resources` folder you will find all the input data (JSON, CSV, parquet files) you need to do the exercises.
 
 The `utils` folder contains the `catalog.py` file which was also used during the first class with the Spark DataFrame API
 but this time adapted for Spark Structured Streaming. `invoice_schema.py` is the invoice schema of the messages written
 to the kafka topic. Under `kafka_scripts` you will find all the necessary scripts to start kafka (zookeeper, server, 
-create topics, start producer, start consumer).
+create topics, start producer, start consumer). In `kafka_commons.py` you will find common methods for all kafka related
+exercises.
 
 [Data Minded Academy]: https://www.dataminded.academy/

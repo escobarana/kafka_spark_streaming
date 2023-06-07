@@ -28,19 +28,6 @@ def transform(input_df):
     return words_df.groupBy("word").count()
 
 
-def sink(transformed_df):
-    # checkpointLocation is needed to store progress information about the streaming job
-    word_count_query = (
-        transformed_df.writeStream.format("console")
-        .outputMode("complete")
-        .option("checkpointLocation", "chk-point-dir")
-        .start()
-    )  # starts background job
-
-    # wait until the background job finishes
-    word_count_query.awaitTermination()
-
-
 def main():
     """
         Example of a streaming word count reading from a TCP/IP port 9999 and using spark structured streaming
@@ -57,13 +44,23 @@ def main():
     lines_df = read(spark)
 
     # 1.1. Check the schema of my input dataframe
-    # lines_df.printSchema()
+    lines_df.printSchema()
+    lines_df.show()
 
     # 2. [TRANSFORM]
     counts_df = transform(lines_df)
 
     # 3. [SINK] Output dataframe - Streaming Sink
-    sink(counts_df)
+    # checkpointLocation is needed to store progress information about the streaming job
+    word_count_query = (
+        counts_df.writeStream.format("console")
+        .outputMode("complete")
+        .option("checkpointLocation", "chk-point-dir")
+        .start()
+    )  # starts background job
+
+    # wait until the background job finishes
+    word_count_query.awaitTermination()
 
 
 if __name__ == "__main__":
