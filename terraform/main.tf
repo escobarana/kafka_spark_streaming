@@ -10,7 +10,7 @@ resource "aws_cloudwatch_log_group" "kafka_log_group" {
 }
 
 resource "aws_msk_configuration" "kafka_config" {
-  kafka_versions    = ["2.6.2"]
+  kafka_versions    = ["2.8.1"] # the recomended one at https://docs.aws.amazon.com/msk/latest/developerguide/supported-kafka-versions.html
   name              = "${var.global_prefix}-config"
   server_properties = <<EOF
 auto.create.topics.enable = true
@@ -20,10 +20,10 @@ EOF
 
 resource "aws_msk_cluster" "kafka" {
   cluster_name           = var.global_prefix
-  kafka_version          = "2.6.2"
-  number_of_broker_nodes = 3
+  kafka_version          = "2.8.1"
+  number_of_broker_nodes = length(data.aws_availability_zones.available.names)
   broker_node_group_info {
-    instance_type = "kafka.m5.large"
+    instance_type = "kafka.m5.large" # default value
     storage_info {
       ebs_storage_info {
         volume_size = 1000
@@ -103,7 +103,7 @@ resource "aws_route_table_association" "private_subnet_association" {
 ################################################################################
 
 resource "aws_subnet" "private_subnet" {
-  count                   = 3
+  count                   = length(var.private_cidr_blocks)
   vpc_id                  = aws_vpc.default.id
   cidr_block              = element(var.private_cidr_blocks, count.index)
   map_public_ip_on_launch = false
@@ -112,7 +112,7 @@ resource "aws_subnet" "private_subnet" {
 
 resource "aws_subnet" "bastion_host_subnet" {
   vpc_id                  = aws_vpc.default.id
-  cidr_block              = "10.0.4.0/24"
+  cidr_block              = var.cidr_blocks_bastion_host[0]
   map_public_ip_on_launch = true
   availability_zone       = data.aws_availability_zones.available.names[0]
 }
@@ -125,18 +125,16 @@ resource "aws_security_group" "kafka" {
   name   = "${var.global_prefix}-kafka"
   vpc_id = aws_vpc.default.id
   ingress {
-    from_port = 0
-    to_port   = 9092
-    protocol  = "TCP"
-    cidr_blocks = ["10.0.1.0/24",
-      "10.0.2.0/24",
-    "10.0.3.0/24"]
+    from_port   = 0
+    to_port     = 9092
+    protocol    = "TCP"
+    cidr_blocks = var.private_cidr_blocks
   }
   ingress {
     from_port   = 0
     to_port     = 9092
     protocol    = "TCP"
-    cidr_blocks = ["10.0.4.0/24"]
+    cidr_blocks = var.cidr_blocks_bastion_host
   }
   egress {
     from_port   = 0
@@ -193,7 +191,7 @@ resource "null_resource" "private_key_permissions" {
 
 resource "aws_instance" "bastion_host" {
   depends_on             = [aws_msk_cluster.kafka]
-  ami                    = data.aws_ami.amazon_linux_2.id
+  ami                    = data.aws_ami.amazon_linux_2023.id
   instance_type          = "t2.micro"
   key_name               = aws_key_pair.private_key.key_name
   subnet_id              = aws_subnet.bastion_host_subnet.id

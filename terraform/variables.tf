@@ -18,3 +18,8 @@ variable "private_cidr_blocks" {
     "10.0.3.0/24",
   ]
 }
+
+variable "cidr_blocks_bastion_host" {
+  type = list(string)
+  default = ["10.0.4.0/24"]
+}
