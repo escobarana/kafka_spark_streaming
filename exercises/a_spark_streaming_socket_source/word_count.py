@@ -44,8 +44,8 @@ def main():
     lines_df = read(spark)
 
     # 1.1. Check the schema of my input dataframe
-    lines_df.printSchema()
-    lines_df.show()
+    # lines_df.printSchema()
+    # lines_df.show()
 
     # 2. [TRANSFORM]
     counts_df = transform(lines_df)
